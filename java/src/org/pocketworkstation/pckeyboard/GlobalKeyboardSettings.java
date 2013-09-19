@@ -84,6 +84,9 @@ public final class GlobalKeyboardSettings {
     public int editorFieldId; 
     public int editorInputType;
 
+    //DrunKeyboard Options
+    public boolean drunkennessDetectionEnabled = true;
+
     /* Updated by KeyboardSwitcher */
     //
     // Used by LatinKeyboardBaseView and LatinIME
@@ -103,7 +106,8 @@ public final class GlobalKeyboardSettings {
     public static final int FLAG_PREF_RESET_KEYBOARDS = 0x8;
     public static final int FLAG_PREF_RESET_MODE_OVERRIDE = 0x10;
     private int mCurrentFlags = 0;
-    
+
+
     private interface BooleanPref {
         void set(boolean val);
         boolean getDefault();
@@ -153,6 +157,12 @@ public final class GlobalKeyboardSettings {
             public void set(String val) { popupKeyboardFlags = Integer.valueOf(val); }
             public String getDefault() { return res.getString(R.string.default_popup_content); }
             public int getFlags() { return FLAG_PREF_RESET_KEYBOARDS; }
+        });
+
+        addBooleanPref("pref_drunk_option", new BooleanPref() {
+            public void set(boolean val) { drunkennessDetectionEnabled = val; }
+            public boolean getDefault() { return true; }
+            public int getFlags() { return FLAG_PREF_NONE; }
         });
 
         addStringPref("pref_suggested_punctuation", new StringPref() {

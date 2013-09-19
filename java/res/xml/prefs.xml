@@ -66,7 +66,7 @@
     <CheckBoxPreference
             android:key="suggestions_in_landscape"
             android:title="@string/title_suggestions_in_landscape"
-            android:persistent="true" 
+            android:persistent="true"
             android:defaultValue="@bool/default_suggestions_in_landscape"
             android:summaryOn="@string/summary_suggestions_in_landscape_true"
             android:summaryOff="@string/summary_suggestions_in_landscape_false"
@@ -129,7 +129,7 @@
             android:summaryOn="@string/summary_caps_lock_true"
             android:summaryOff="@string/summary_caps_lock_false"
             />
-    
+
     <CheckBoxPreference
             android:key="pref_shift_lock_modifiers"
             android:title="@string/title_shift_lock_modifiers"
@@ -138,7 +138,7 @@
             android:summaryOn="@string/summary_shift_lock_modifiers_true"
             android:summaryOff="@string/summary_shift_lock_modifiers_false"
             />
-    
+
     <PreferenceScreen
             android:title="@string/pref_screen_feedback_title"
             android:summary="Configure key sound, vibrate, preview popup etc.">
@@ -173,7 +173,7 @@
     <org.pocketworkstation.pckeyboard.AutoSummaryListPreference
             android:key="pref_slide_keys_int"
             android:title="@string/title_slide_keys"
-            android:persistent="true" 
+            android:persistent="true"
             android:entries="@array/slide_keys_entries"
             android:entryValues="@array/slide_keys_values"
             android:defaultValue="0"
@@ -230,7 +230,7 @@
             android:key="auto_complete"
             android:title="@string/auto_complete"
             android:summary="@string/auto_complete_summary"
-            android:persistent="true" 
+            android:persistent="true"
             android:defaultValue="@bool/enable_autocorrect"
             android:dependency="show_suggestions"
             />
@@ -257,7 +257,7 @@
     <CheckBoxPreference
             android:key="fullscreen_override"
             android:title="@string/title_fullscreen_override"
-            android:persistent="true" 
+            android:persistent="true"
             android:defaultValue="@bool/default_fullscreen_override"
             android:summaryOn="@string/summary_fullscreen_override_true"
             android:summaryOff="@string/summary_fullscreen_override_false"
@@ -266,7 +266,7 @@
     <CheckBoxPreference
             android:key="force_keyboard_on"
             android:title="@string/title_force_keyboard_on"
-            android:persistent="true" 
+            android:persistent="true"
             android:defaultValue="@bool/default_force_keyboard_on"
             android:summaryOn="@string/summary_force_keyboard_on_true"
             android:summaryOff="@string/summary_force_keyboard_on_false"
@@ -275,7 +275,7 @@
     <CheckBoxPreference
             android:key="keyboard_notification"
             android:title="@string/title_keyboard_notification"
-            android:persistent="true" 
+            android:persistent="true"
             android:defaultValue="@bool/default_keyboard_notification"
             android:summaryOn="@string/summary_keyboard_notification_true"
             android:summaryOff="@string/summary_keyboard_notification_false"
@@ -289,7 +289,7 @@
         <CheckBoxPreference
             android:key="connectbot_tab_hack"
             android:title="@string/title_connectbot_tab_hack"
-            android:persistent="true" 
+            android:persistent="true"
             android:defaultValue="true"
             android:summaryOn="@string/summary_connectbot_tab_hack_true"
             android:summaryOff="@string/summary_connectbot_tab_hack_false"
@@ -304,10 +304,18 @@
     <CheckBoxPreference
             android:key="pref_touch_pos"
             android:title="@string/title_touch_pos"
-            android:persistent="true" 
+            android:persistent="true"
             android:defaultValue="false"
             android:summaryOn="@string/summary_touch_pos_true"
             android:summaryOff="@string/summary_touch_pos_false"
+            />
+    <CheckBoxPreference
+            android:key="pref_drunk_option"
+            android:title="@string/title_drunk_option"
+            android:persistent="true"
+            android:defaultValue="true"
+            android:summaryOn="@string/summary_drunk_option_true"
+            android:summaryOff="@string/summary_drunk_option_false"
             />
 
     <Preference
