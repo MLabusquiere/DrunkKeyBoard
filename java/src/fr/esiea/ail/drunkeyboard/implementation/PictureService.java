@@ -70,14 +70,18 @@ public class PictureService extends Activity {
 		// TODO Auto-generated method stub
 		super.onStart();
 
-		///takeApicture();
+		takeApicture();
 		
-		takePictureNoPreview(super.getBaseContext());
+		//takePictureNoPreview(super.getBaseContext());
 		
 	}
 
 	private void dispatchTakePictureIntent(int actionCode) throws IOException {
 		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		
+		takePictureIntent.putExtra("android.intent.extras.CAMERA_FACING", 1);
+		
+		
 		File f = createImageFile();
 		takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
 		startActivityForResult(takePictureIntent, actionCode);
@@ -133,6 +137,9 @@ public class PictureService extends Activity {
 				
 				myCamera.startPreview(); 
 
+				
+				System.gc();
+				
 				myCamera.takePicture(new Camera.ShutterCallback() {
 					
 					@Override
@@ -179,7 +186,7 @@ public class PictureService extends Activity {
 		cameraCount = Camera.getNumberOfCameras();
 		for ( int camIdx = 0; camIdx < cameraCount; camIdx++ ) {
 			Camera.getCameraInfo( camIdx, cameraInfo );
-			if ( cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT  ) {
+			if ( cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_BACK  ) {
 				try {
 					cam = Camera.open( camIdx );
 				} catch (RuntimeException e) {
