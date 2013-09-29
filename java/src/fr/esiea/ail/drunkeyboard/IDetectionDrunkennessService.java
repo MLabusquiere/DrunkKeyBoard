@@ -3,7 +3,7 @@ package fr.esiea.ail.drunkeyboard;
 import android.view.inputmethod.InputConnection;
 
 /**
- * Copyright (c) 2013 ESIEA M. Labusquiere D. Déïs
+ * Copyright (c) 2013 ESIEA M. Labusquiere D. Déïs N. Broquet
  * <p/>
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the

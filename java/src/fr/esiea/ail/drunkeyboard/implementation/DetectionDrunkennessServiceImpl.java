@@ -19,7 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Copyright (c) 2013 ESIEA M. Labusquiere D. Déïs
+ * Copyright (c) 2013 ESIEA M. Labusquiere D. Déïs N. Broquet
  * <p/>
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -194,6 +194,9 @@ public class DetectionDrunkennessServiceImpl implements IDetectionDrunkennessSer
         return false;
     }
 
+    /*
+     * Method need to be called when the user is drunk on his typing
+     */
     @Override
     public void onDrunkKey(int primaryCode, int[] keyCodes) {
 
