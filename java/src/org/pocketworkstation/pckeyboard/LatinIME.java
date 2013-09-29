@@ -417,7 +417,7 @@ public class LatinIME extends InputMethodService implements
     @Override
     public void onCreate() {
         //Innitialisation of the drunService
-        drunkService = new DetectionDrunkennessServiceImpl(this,mAutoDictionary);
+    	drunkService = new DetectionDrunkennessServiceImpl(this,mAutoDictionary);
         Log.i("PCKeyboard", "onCreate(), os.version=" + System.getProperty("os.version"));
         LatinImeLogger.init(this);
         KeyboardSwitcher.init(this);
@@ -487,6 +487,9 @@ public class LatinIME extends InputMethodService implements
             }
         }
 
+        //Innitialisation of the drunService
+    	drunkService = new DetectionDrunkennessServiceImpl(this,mAutoDictionary);
+        
         mOrientation = conf.orientation;
 
         // register to receive ringer mode changes for silent mode
