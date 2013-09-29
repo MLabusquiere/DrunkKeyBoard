@@ -216,7 +216,7 @@ public class DetectionDrunkennessServiceImpl implements IDetectionDrunkennessSer
      * Algorithm needed to be executed if the user is drunk
      */
     @Override
-    public void execute(InputConnection currentInputConnection) {
+    public final void execute(InputConnection currentInputConnection) {
 
         //Remove all the text typed by the user
         removeText(currentInputConnection);
@@ -230,7 +230,7 @@ public class DetectionDrunkennessServiceImpl implements IDetectionDrunkennessSer
     private void setStateDrunk() {
         drunk = true;
     }
-    
+
     /*
      * Remove the text of the imput
      */
