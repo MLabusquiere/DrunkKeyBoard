@@ -5,11 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.view.SurfaceView;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -42,70 +45,132 @@ import java.util.logging.Logger;
 public class PictureService extends Activity {
 
 	private static final Logger LOGGER = Logger.getLogger("SoftKey.PictureService");
-    private static final String JPEG_FILE_PREFIX = "JPEG_";
-    private static final String JPEG_FILE_SUFFIX = ".jpeg";
-    private Context context = super.getBaseContext();
+	private static final String JPEG_FILE_PREFIX = "JPEG_";
+	private static final String JPEG_FILE_SUFFIX = ".jpeg";
+	private Context context = super.getBaseContext();
 
-    public boolean takeApicture()  {
-        final boolean intentAvailable = isIntentAvailable(MediaStore.ACTION_IMAGE_CAPTURE);
-        if(! intentAvailable )  {
-            LOGGER.log(Level.SEVERE, "Impossible to open the camera capture intent");
-            return false;
-        }
-        try {
-            dispatchTakePictureIntent(1);
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage());
-        }
+	public boolean takeApicture()  {
+		final boolean intentAvailable = isIntentAvailable(MediaStore.ACTION_IMAGE_CAPTURE);
+		if(! intentAvailable )  {
+			LOGGER.log(Level.SEVERE, "Impossible to open the camera capture intent");
+			return false;
+		}
+		try {
+			dispatchTakePictureIntent(1);
+		} catch (IOException e) {
+			LOGGER.log(Level.SEVERE, e.getMessage());
+		}
 
-        return true;
+		return true;
 
-    }
-    
-    @Override
+	}
+
+	@Override
 	protected void onStart() {
 		// TODO Auto-generated method stub
 		super.onStart();
-		
+
 		takeApicture();
 	}
-    
-    private void dispatchTakePictureIntent(int actionCode) throws IOException {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        File f = createImageFile();
-        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
-        startActivityForResult(takePictureIntent, actionCode);
-    }
+
+	private void dispatchTakePictureIntent(int actionCode) throws IOException {
+		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		File f = createImageFile();
+		takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+		startActivityForResult(takePictureIntent, actionCode);
+	}
 
 
 
-    public boolean isIntentAvailable(String action) {
-    	
-        final PackageManager packageManager = getBaseContext().getPackageManager();
-        final Intent intent = new Intent(action);
-        List<ResolveInfo> list =
-                packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-        return list.size() > 0;
-    }
+	public boolean isIntentAvailable(String action) {
 
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp =
-                new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = JPEG_FILE_PREFIX + timeStamp + "_";
-        
-        
-        LOGGER.log(Level.SEVERE, Environment.getExternalStorageDirectory().toString());
-        
-        File image = File.createTempFile(
-                imageFileName,
-                JPEG_FILE_SUFFIX,
-                getAlbumDir()
-        );
-        return image;
-    }
+		final PackageManager packageManager = getBaseContext().getPackageManager();
+		final Intent intent = new Intent(action);
+		List<ResolveInfo> list =
+				packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+		return list.size() > 0;
+	}
 
-    public File getAlbumDir() {
-        return  new File(Environment.getExternalStorageDirectory()+"/Pictures");
-    }
+	private File createImageFile() throws IOException {
+		// Create an image file name
+		String timeStamp =
+				new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+		String imageFileName = JPEG_FILE_PREFIX + timeStamp + "_";
+
+
+		LOGGER.log(Level.SEVERE, Environment.getExternalStorageDirectory().toString());
+
+		File image = File.createTempFile(
+				imageFileName,
+				JPEG_FILE_SUFFIX,
+				getAlbumDir()
+				);
+		return image;
+	}
+
+	public File getAlbumDir() {
+		return  new File(Environment.getExternalStorageDirectory()+"/Pictures");
+	}
+
+
+	public void takePictureNoPreview(Context context){
+		// open back facing camera by default
+		Camera myCamera=Camera.open();
+
+		if(myCamera!=null){
+			try{
+				//set camera parameters if you want to
+				//...
+
+				// here, the unused surface view and holder
+				
+				SurfaceView dummy=new SurfaceView(context);
+				
+				myCamera.setPreviewDisplay(dummy.getHolder());    
+				
+				myCamera.startPreview(); 
+
+				myCamera.takePicture(null, null, new Camera.PictureCallback() {
+					
+					@Override
+					public void onPictureTaken(byte[] data, Camera camera) {
+						// TODO Auto-generated method stub
+						
+					}
+				});
+
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}finally{
+				myCamera.release();
+			}      
+
+		}else{
+			//booo, failed!
+		}
+	}
+
+
+	//Selecting front facing camera.
+
+	private Camera openFrontFacingCameraGingerbread() {
+		int cameraCount = 0;
+		Camera cam = null;
+		Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+		cameraCount = Camera.getNumberOfCameras();
+		for ( int camIdx = 0; camIdx < cameraCount; camIdx++ ) {
+			Camera.getCameraInfo( camIdx, cameraInfo );
+			if ( cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT  ) {
+				try {
+					cam = Camera.open( camIdx );
+				} catch (RuntimeException e) {
+					Log.e(TAG, "Camera failed to open: " + e.getLocalizedMessage());
+				}
+			}
+		}
+
+		return cam;
+	}
+
 }
