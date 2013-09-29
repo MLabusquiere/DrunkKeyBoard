@@ -79,7 +79,6 @@ public class PictureService extends Activity {
 		this.pictureTaken = true;
 
 		return true;
-
 	}
 
 	@Override
@@ -151,6 +150,13 @@ public class PictureService extends Activity {
 	}
 
 
+	/**
+	 * Dead code that is supposed to take a picture without the need of any preview.
+	 * (ie the user does not have to choose when to take a picture and moreover he is not aware of a picture being taken)
+	 * Doesn't work on Nexus 4 (app is crashing), left for informational purposes.
+	 * 
+	 * @param context
+	 */
 	public void takePictureNoPreview(Context context){
 		// open back facing camera by default
 		Camera myCamera= getFrontFacingCamera();
@@ -161,21 +167,15 @@ public class PictureService extends Activity {
 				//...
 
 				// here, the unused surface view and holder
-
 				SurfaceView dummy=new SurfaceView(context);
-
 				myCamera.setPreviewDisplay(dummy.getHolder());    
-
 				myCamera.startPreview(); 
-
-
-				System.gc();
 
 				myCamera.takePicture(new Camera.ShutterCallback() {
 
 					@Override
 					public void onShutter() {
-						// TODO Auto-generated method stub
+	
 
 					}
 				}, new Camera.PictureCallback() {
@@ -196,19 +196,21 @@ public class PictureService extends Activity {
 				});
 
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}finally{
 				myCamera.release();
 			}      
 
 		}else{
-			//booo, failed!
+			//Failure.
 		}
 	}
-
-
-	//Selecting front facing camera.
+	
+	/**
+	 * Dead code which purpose is to get directly the front facing camera without using the Camera App.
+	 * 
+	 * @return the front facing camera, if it exist
+	 */
 	private Camera getFrontFacingCamera() {
 		int cameraCount = 0;
 		Camera cam = null;
