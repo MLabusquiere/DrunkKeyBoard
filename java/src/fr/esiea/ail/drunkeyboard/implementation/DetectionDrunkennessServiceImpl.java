@@ -42,20 +42,45 @@ import java.util.logging.Logger;
  */
 public class DetectionDrunkennessServiceImpl implements IDetectionDrunkennessService {
     private final static Logger LOGGER = Logger.getLogger("SoftKey.DrunkService");
+    /*
+     * Size of the text which be used to apply drunkenness algorithm
+     */
     private static final int BUFFER_SIZE = 30;
+    /*
+     * Size max of a word when you are not drunk
+     */
     private static final int SIZE_MAX = 15;
+    /*
+     * Time max between two char
+     */
     private static final long TIME_MAX_MILLISECONDS = 6000;
+    /*
+     * Frequency max than a char can appear in a word
+     */
     private static final Integer MAX_FREQUENCY = 5;
+    /*
+     * Message than the user need to tape to unlock the keyboard
+     */
     private static final String WORD_KEY ="not drunk";
-    private boolean inPreview=false;
+    /*
+     * Buffer than keep the text entered by the user
+     */
     private String text;
+   /*
+    * Last time than a user entered a char
+    */
     private long lastCurrentTime = 0;
+    /*
+     * buffer use when the user is drunk to check if he's typing the right WORD_KEY
+     */
     private String buffer = "";
+    /*
+     * Keep if the user is drunk
+     */
     private boolean drunk = false;
-    //private Camera mServiceCamera = Camera.open(CAMERA_FACING_BACK);
-    private SurfaceHolder mSurfaceHolder;
-    private MediaRecorder mMediaRecorder;
-    private boolean mRecordingStatus;
+    /*
+     * The keyboard where this class need to get the context and the inputService
+     */
     private final LatinIME latinIME;
 
 
