@@ -83,24 +83,39 @@ public class DetectionDrunkennessServiceImpl implements IDetectionDrunkennessSer
      */
     private final LatinIME latinIME;
 
-
+    /*
+     * IoC helper
+     */
     public DetectionDrunkennessServiceImpl(final LatinIME inputService) {
         this.latinIME = inputService;
     }
 
+    /*
+     * Check if the user is drunk
+     */
     @Override
     public boolean isUserDrunk(InputConnection currentInputConnection) {
-        LOGGER.log(Level.INFO, "In isUserDrunk");
+
+        //Get previous input
         text = currentInputConnection.getTextBeforeCursor(BUFFER_SIZE, InputType.TYPE_TEXT_VARIATION_SHORT_MESSAGE).toString();
+
+        //Apply algorithm on the input
         boolean tooLong = isTooLong(text);
         boolean notAWord = isNotAWord(text);
         boolean random = isRandom(text);
         boolean tooSlow = isTooSlow(text);
-        LOGGER.log(Level.INFO," "+  tooLong +" " + random + " " +tooSlow);
-        return tooLong || notAWord || random || tooSlow || drunk;
+
+        boolean isDrunk = tooLong || notAWord || random || tooSlow || drunk;
+
+        LOGGER.log(Level.INFO, "Is User Drunk ?" + isDrunk);
+        //Return if the use is drunk
+        return isDrunk;
 
     }
 
+    /*
+     * Algorithm than calculating is the user is too slow when he is typing
+     */
     private boolean isTooSlow(String text) {
 
         LOGGER.log(Level.INFO,"In isTooSlow");
@@ -112,20 +127,31 @@ public class DetectionDrunkennessServiceImpl implements IDetectionDrunkennessSer
 
         long currentTime = System.currentTimeMillis();
 
+        //get the time between two char and compare it to the time max
         if(TIME_MAX_MILLISECONDS < lastCurrentTime - currentTime)
             result = true;
 
         lastCurrentTime = currentTime;
+
+        //Return true if the use was too slow
         return result;
 
     }
 
+    /*
+     * Algorithm to detect if the user type random word
+     */
     private boolean isRandom(String text) {
+
         LOGGER.log(Level.INFO,"In isRandom");
 
+        //Innitialisation
         HashMap<Character,Integer> map = new HashMap<Character,Integer>();
+        //Get Only the last word
         String[] split = text.split(" ");
         String s = split[split.length - 1];
+
+        //Calculate the frequency of each char of the word
         for(int i = 0; i < s.length(); i++){
             char c = s.charAt(i);
 
@@ -137,6 +163,7 @@ public class DetectionDrunkennessServiceImpl implements IDetectionDrunkennessSer
 
         }
 
+        //if one frequency is higher than MAX_FREQUENCY the user is drunk
         for(Integer i:map.values()) {
             if(MAX_FREQUENCY < i)
                 return true;
@@ -144,13 +171,21 @@ public class DetectionDrunkennessServiceImpl implements IDetectionDrunkennessSer
         return false;
     }
 
+    /*
+     * Check if the word  typed by the user is not a correct word
+     */
     private boolean isNotAWord(String text) {
-        return false;  //To change body of created methods use File | Settings | File Templates.
+        //Not Implemented yet
+        return false;
     }
 
+    /*
+     * Check if the user type too long word
+     */
     private boolean isTooLong(String text) {
         LOGGER.log(Level.INFO,"In isTooLong");
 
+        //Calculate if the last word typing by the user has a higer size than SIZE_MAX
         String[] split = text.split(" ");
         for(String s: split)    {
             if( SIZE_MAX < s.length() )
@@ -177,11 +212,17 @@ public class DetectionDrunkennessServiceImpl implements IDetectionDrunkennessSer
 
     }
 
+    /*
+     * Algorithm needed to be executed if the user is drunk
+     */
     @Override
     public void execute(InputConnection currentInputConnection) {
 
+        //Remove all the text typed by the user
         removeText(currentInputConnection);
+        //Set the state of the user as drunk
         setStateDrunk();
+        //Make appear a toast to warn the user
         Toast.makeText(latinIME.getApplicationContext(),"You are drunk type \""+WORD_KEY+"\" to enables keyboard",Toast.LENGTH_LONG).show();
 
     }
@@ -189,9 +230,13 @@ public class DetectionDrunkennessServiceImpl implements IDetectionDrunkennessSer
     private void setStateDrunk() {
         drunk = true;
     }
-
+    
+    /*
+     * Remove the text of the imput
+     */
     private void removeText(InputConnection currentInputConnection) {
         int length = currentInputConnection.getTextBeforeCursor(1000, InputConnection.GET_TEXT_WITH_STYLES).length();
+        //Simulating 1000 KEYCODE_DEL from the user
         for(int i=0; i < length;i++)    {
             latinIME.sendDownUpKeyEvents(KeyEvent.KEYCODE_DEL);
         }
