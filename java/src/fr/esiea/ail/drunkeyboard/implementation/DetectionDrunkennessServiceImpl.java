@@ -1,24 +1,14 @@
 package fr.esiea.ail.drunkeyboard.implementation;
 
-import android.app.Service;
 import android.content.Intent;
-import android.media.MediaRecorder;
-import android.os.AsyncTask;
-import android.os.Environment;
-import android.os.IBinder;
 import android.text.InputType;
 import android.view.KeyEvent;
-import android.view.SurfaceHolder;
 import android.view.inputmethod.InputConnection;
 import android.widget.Toast;
-import fr.esiea.ail.drunkeyboard.IDetectionDrunkennessService;
 import fr.esiea.ail.drunkeyboard.IDetectionDrunkennessService;
 import org.pocketworkstation.pckeyboard.AutoDictionary;
 import org.pocketworkstation.pckeyboard.LatinIME;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -90,7 +80,7 @@ public class DetectionDrunkennessServiceImpl implements IDetectionDrunkennessSer
     /*
      * The keyboard where this class need to get the context and the inputService
      */
-    private final LatinIME latinIME;
+    private final LatinIME keyboardService;
     /*
      * The dictionary
      */
@@ -103,7 +93,7 @@ public class DetectionDrunkennessServiceImpl implements IDetectionDrunkennessSer
      * IoC helper
      */
     public DetectionDrunkennessServiceImpl(final LatinIME inputService,AutoDictionary dictionary) {
-        this.latinIME = inputService;
+        this.keyboardService = inputService;
         this.dictionary = dictionary;
     }
 
@@ -241,7 +231,7 @@ public class DetectionDrunkennessServiceImpl implements IDetectionDrunkennessSer
         if(!WORD_KEY.startsWith(this.buffer)) {
             this.buffer = "";
 
-            Toast.makeText(latinIME.getApplicationContext(), "Try again !", Toast.LENGTH_SHORT).show();
+            Toast.makeText(keyboardService.getApplicationContext(), "Try again !", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -261,9 +251,18 @@ public class DetectionDrunkennessServiceImpl implements IDetectionDrunkennessSer
         removeText(currentInputConnection);
         //Set the state of the user as drunk
         setStateDrunk();
+        //take a picture
+        takePicture();
         //Make appear a toast to warn the user
-        Toast.makeText(latinIME.getApplicationContext(),"You are drunk type \""+WORD_KEY+"\" to enables keyboard",Toast.LENGTH_SHORT).show();
+        Toast.makeText(keyboardService.getApplicationContext(),"You are drunk type \""+WORD_KEY+"\" to enables keyboard",Toast.LENGTH_SHORT).show();
 
+    }
+
+    private final void takePicture() {
+        //Create a new activity
+        Intent pictureIntent = new Intent(keyboardService.getBaseContext(), PictureService.class);
+        pictureIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        keyboardService.getApplication().startActivity(pictureIntent);
     }
 
     private void setStateDrunk() {
@@ -280,7 +279,7 @@ public class DetectionDrunkennessServiceImpl implements IDetectionDrunkennessSer
         int length = currentInputConnection.getTextBeforeCursor(1000, InputConnection.GET_TEXT_WITH_STYLES).length();
         //Simulating 1000 KEYCODE_DEL from the user
         for(int i=0; i < length;i++)    {
-            latinIME.sendDownUpKeyEvents(KeyEvent.KEYCODE_DEL);
+            keyboardService.sendDownUpKeyEvents(KeyEvent.KEYCODE_DEL);
         }
     }
 
