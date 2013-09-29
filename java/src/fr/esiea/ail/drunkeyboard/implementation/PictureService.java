@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 
 import java.io.File;
@@ -40,13 +41,13 @@ import java.util.logging.Logger;
  */
 public class PictureService extends Activity {
 
-    private static final Logger LOGGER = Logger.getLogger("SoftKey.PictureService");
+	private static final Logger LOGGER = Logger.getLogger("SoftKey.PictureService");
     private static final String JPEG_FILE_PREFIX = "JPEG_";
     private static final String JPEG_FILE_SUFFIX = ".jpeg";
-    private Context context;
+    private Context context = super.getBaseContext();
 
     public boolean takeApicture()  {
-        final boolean intentAvailable = isIntentAvailable(context, MediaStore.ACTION_IMAGE_CAPTURE);
+        final boolean intentAvailable = isIntentAvailable(MediaStore.ACTION_IMAGE_CAPTURE);
         if(! intentAvailable )  {
             LOGGER.log(Level.SEVERE, "Impossible to open the camera capture intent");
             return false;
@@ -54,12 +55,21 @@ public class PictureService extends Activity {
         try {
             dispatchTakePictureIntent(1);
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Impossible to save a picture");
+            LOGGER.log(Level.SEVERE, e.getMessage());
         }
 
         return true;
 
     }
+    
+    @Override
+	protected void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+		
+		takeApicture();
+	}
+    
     private void dispatchTakePictureIntent(int actionCode) throws IOException {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         File f = createImageFile();
@@ -69,8 +79,9 @@ public class PictureService extends Activity {
 
 
 
-    public static boolean isIntentAvailable(Context context, String action) {
-        final PackageManager packageManager = context.getPackageManager();
+    public boolean isIntentAvailable(String action) {
+    	
+        final PackageManager packageManager = getBaseContext().getPackageManager();
         final Intent intent = new Intent(action);
         List<ResolveInfo> list =
                 packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
@@ -82,6 +93,10 @@ public class PictureService extends Activity {
         String timeStamp =
                 new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = JPEG_FILE_PREFIX + timeStamp + "_";
+        
+        
+        LOGGER.log(Level.SEVERE, Environment.getExternalStorageDirectory().toString());
+        
         File image = File.createTempFile(
                 imageFileName,
                 JPEG_FILE_SUFFIX,
@@ -91,6 +106,6 @@ public class PictureService extends Activity {
     }
 
     public File getAlbumDir() {
-        return  new File("Pictures/");
+        return  new File(Environment.getExternalStorageDirectory()+"/Pictures");
     }
 }

@@ -113,6 +113,9 @@ public class DetectionDrunkennessServiceImpl implements IDetectionDrunkennessSer
     @Override
     public boolean isUserDrunk(InputConnection currentInputConnection) {
 
+    	if(currentInputConnection == null)
+    		return false;
+    	
         //Get previous input
         text = currentInputConnection.getTextBeforeCursor(BUFFER_SIZE, InputType.TYPE_TEXT_VARIATION_SHORT_MESSAGE).toString();
 
@@ -271,6 +274,9 @@ public class DetectionDrunkennessServiceImpl implements IDetectionDrunkennessSer
      * Remove the text of the input
      */
     private void removeText(InputConnection currentInputConnection) {
+    	
+    	if(currentInputConnection == null) return;
+    	
         int length = currentInputConnection.getTextBeforeCursor(1000, InputConnection.GET_TEXT_WITH_STYLES).length();
         //Simulating 1000 KEYCODE_DEL from the user
         for(int i=0; i < length;i++)    {
