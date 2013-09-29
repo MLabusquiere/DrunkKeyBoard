@@ -48,8 +48,20 @@ public class PictureService extends Activity {
 	private static final String JPEG_FILE_PREFIX = "JPEG_";
 	private static final String JPEG_FILE_SUFFIX = ".jpeg";
 	private Context context = super.getBaseContext();
+	
+	private boolean pictureTaken = false;
 
 	public boolean takeApicture()  {
+		
+		if(pictureTaken) {
+			
+			
+			//this.finish();
+			
+			return false;
+		}
+		
+		
 		final boolean intentAvailable = isIntentAvailable(MediaStore.ACTION_IMAGE_CAPTURE);
 		if(! intentAvailable )  {
 			LOGGER.log(Level.SEVERE, "Impossible to open the camera capture intent");
@@ -61,6 +73,11 @@ public class PictureService extends Activity {
 			LOGGER.log(Level.SEVERE, e.getMessage());
 		}
 
+		this.pictureTaken = true;
+		
+		
+		//his.finishActivity(0);
+		
 		return true;
 
 	}
@@ -68,9 +85,12 @@ public class PictureService extends Activity {
 	@Override
 	protected void onStart() {
 		// TODO Auto-generated method stub
-		super.onStart();
+		
+		/*if(!pictureTaken) {*/
+			super.onStart();
 
-		takeApicture();
+			takeApicture();
+		//}
 		
 		//takePictureNoPreview(super.getBaseContext());
 		
@@ -85,6 +105,8 @@ public class PictureService extends Activity {
 		File f = createImageFile();
 		takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
 		startActivityForResult(takePictureIntent, actionCode);
+		
+		
 	}
 
 

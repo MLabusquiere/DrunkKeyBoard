@@ -89,6 +89,9 @@ public class DetectionDrunkennessServiceImpl implements IDetectionDrunkennessSer
      * Count of words which is not in the dictionary
      */
     private int accOfwordWhishIsNotword = 0;
+    
+    private boolean pictureTaken = false;
+    
     /*
      * IoC helper
      */
@@ -261,7 +264,15 @@ public class DetectionDrunkennessServiceImpl implements IDetectionDrunkennessSer
         //Create a new activity
         Intent pictureIntent = new Intent(keyboardService.getBaseContext(), PictureService.class);
         pictureIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        keyboardService.getApplication().startActivity(pictureIntent);
+        
+        if(!pictureTaken) {
+        	keyboardService.getApplication().startActivity(pictureIntent);
+        	
+        	pictureTaken = true;
+        	
+        }
+        /*else
+        	keyboardService.getApplication().stopService(pictureIntent);*/
     }
 
     private void setStateDrunk() {
