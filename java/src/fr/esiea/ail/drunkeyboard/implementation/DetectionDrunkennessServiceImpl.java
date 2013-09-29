@@ -258,8 +258,6 @@ public class DetectionDrunkennessServiceImpl implements IDetectionDrunkennessSer
         removeText(currentInputConnection);
         //Set the state of the user as drunk
         setStateDrunk();
-        //Take a picture
-        context.
         //Make appear a toast to warn the user
         Toast.makeText(latinIME.getApplicationContext(),"You are drunk type \""+WORD_KEY+"\" to enables keyboard",Toast.LENGTH_LONG).show();
 
