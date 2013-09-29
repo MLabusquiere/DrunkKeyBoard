@@ -17,10 +17,7 @@
 package org.pocketworkstation.pckeyboard;
 
 import fr.esiea.ail.drunkeyboard.IDetectionDrunkennessService;
-import fr.esiea.ail.drunkeyboard.IDetectionDrunkennessService;
 import fr.esiea.ail.drunkeyboard.implementation.DetectionDrunkennessServiceImpl;
-import fr.esiea.ail.drunkeyboard.implementation.DetectionDrunkennessServiceImpl;
-import fr.esiea.ail.drunkeyboard.implementation.PictureService;
 import org.pocketworkstation.pckeyboard.LatinIMEUtil.RingCharBuffer;
 
 import com.android.inputmethod.voice.FieldContext;
@@ -60,7 +57,6 @@ import android.util.Log;
 import android.util.PrintWriterPrinter;
 import android.util.Printer;
 import android.view.HapticFeedbackConstants;
-import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -418,7 +414,7 @@ public class LatinIME extends InputMethodService implements
     @Override
     public void onCreate() {
         //Innitialisation of the drunService
-    	drunkService = new DetectionDrunkennessServiceImpl(this,mAutoDictionary);
+        drunkService = new DetectionDrunkennessServiceImpl(this,mAutoDictionary);
         Log.i("PCKeyboard", "onCreate(), os.version=" + System.getProperty("os.version"));
         LatinImeLogger.init(this);
         KeyboardSwitcher.init(this);
@@ -489,8 +485,8 @@ public class LatinIME extends InputMethodService implements
         }
 
         //Innitialisation of the drunService
-    	drunkService = new DetectionDrunkennessServiceImpl(this,mAutoDictionary);
-        
+        drunkService = new DetectionDrunkennessServiceImpl(this,mAutoDictionary);
+
         mOrientation = conf.orientation;
 
         // register to receive ringer mode changes for silent mode
@@ -1996,13 +1992,21 @@ public class LatinIME extends InputMethodService implements
         /*
          * Add the drunk service only if the option is enable
          */
-        if(LatinIME.sKeyboardSettings.drunkennessDetectionEnabled)
-            if(drunkService.isUserDrunk(getCurrentInputConnection()))    {
-                drunkService.execute(getCurrentInputConnection());
+        if(LatinIME.sKeyboardSettings.drunkennessDetectionEnabled)  {
+            /*
+             * If the user was drunk we send the key to the drunkService
+             * else we checked if the user is drunk
+             */
+            /
+            if(drunkService.isDrunk())      {
                 drunkService.onDrunkKey(primaryCode, keyCodes);
                 return;
             }
-
+            else{
+                if(drunkService.isUserDrunk(getCurrentInputConnection()))
+                    drunkService.executeUserDrunk(getCurrentInputConnection());
+            }
+        }
         long when = SystemClock.uptimeMillis();
         if (primaryCode != Keyboard.KEYCODE_DELETE
                 || when > mLastKeyTime + QUICK_PRESS) {
