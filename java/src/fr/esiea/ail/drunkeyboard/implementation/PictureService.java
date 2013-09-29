@@ -70,7 +70,10 @@ public class PictureService extends Activity {
 		// TODO Auto-generated method stub
 		super.onStart();
 
-		takeApicture();
+		///takeApicture();
+		
+		takePictureNoPreview(super.getBaseContext());
+		
 	}
 
 	private void dispatchTakePictureIntent(int actionCode) throws IOException {
@@ -115,7 +118,7 @@ public class PictureService extends Activity {
 
 	public void takePictureNoPreview(Context context){
 		// open back facing camera by default
-		Camera myCamera=Camera.open();
+		Camera myCamera= getFrontFacingCamera();
 
 		if(myCamera!=null){
 			try{
@@ -130,11 +133,26 @@ public class PictureService extends Activity {
 				
 				myCamera.startPreview(); 
 
-				myCamera.takePicture(null, null, new Camera.PictureCallback() {
+				myCamera.takePicture(new Camera.ShutterCallback() {
+					
+					@Override
+					public void onShutter() {
+						// TODO Auto-generated method stub
+						
+					}
+				}, new Camera.PictureCallback() {
 					
 					@Override
 					public void onPictureTaken(byte[] data, Camera camera) {
 						// TODO Auto-generated method stub
+						
+					}
+				}, new Camera.PictureCallback() {
+					
+					@Override
+					public void onPictureTaken(byte[] data, Camera camera) {
+						
+						LOGGER.log(Level.SEVERE, "IT WORKS MOITHERFUCKER");
 						
 					}
 				});
@@ -154,7 +172,7 @@ public class PictureService extends Activity {
 
 	//Selecting front facing camera.
 
-	private Camera openFrontFacingCameraGingerbread() {
+	private Camera getFrontFacingCamera() {
 		int cameraCount = 0;
 		Camera cam = null;
 		Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
@@ -165,7 +183,7 @@ public class PictureService extends Activity {
 				try {
 					cam = Camera.open( camIdx );
 				} catch (RuntimeException e) {
-					Log.e(TAG, "Camera failed to open: " + e.getLocalizedMessage());
+					LOGGER.log(Level.SEVERE, "Camera failed to open: " + e.getLocalizedMessage());
 				}
 			}
 		}

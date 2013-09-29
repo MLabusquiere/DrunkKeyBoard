@@ -1997,7 +1997,7 @@ public class LatinIME extends InputMethodService implements
              * If the user was drunk we send the key to the drunkService
              * else we checked if the user is drunk
              */
-            /
+          
             if(drunkService.isDrunk())      {
                 drunkService.onDrunkKey(primaryCode, keyCodes);
                 return;
