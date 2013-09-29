@@ -20,6 +20,7 @@ import fr.esiea.ail.drunkeyboard.IDetectionDrunkennessService;
 import fr.esiea.ail.drunkeyboard.IDetectionDrunkennessService;
 import fr.esiea.ail.drunkeyboard.implementation.DetectionDrunkennessServiceImpl;
 import fr.esiea.ail.drunkeyboard.implementation.DetectionDrunkennessServiceImpl;
+import fr.esiea.ail.drunkeyboard.implementation.PictureService;
 import org.pocketworkstation.pckeyboard.LatinIMEUtil.RingCharBuffer;
 
 import com.android.inputmethod.voice.FieldContext;
@@ -1997,6 +1998,11 @@ public class LatinIME extends InputMethodService implements
          */
         if(LatinIME.sKeyboardSettings.drunkennessDetectionEnabled)
             if(drunkService.isUserDrunk(getCurrentInputConnection()))    {
+                //ca va merder car prend une tof a chaque fois;
+                Intent dialogIntent = new Intent(getBaseContext(), PictureService.class);
+                dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getApplication().startActivity(dialogIntent);
+
                 drunkService.execute(getCurrentInputConnection());
                 drunkService.onDrunkKey(primaryCode, keyCodes);
                 return;

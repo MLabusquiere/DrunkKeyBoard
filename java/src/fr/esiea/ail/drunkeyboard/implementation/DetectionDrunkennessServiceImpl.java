@@ -1,8 +1,11 @@
 package fr.esiea.ail.drunkeyboard.implementation;
 
+import android.app.Service;
+import android.content.Intent;
 import android.media.MediaRecorder;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.os.IBinder;
 import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
@@ -255,6 +258,8 @@ public class DetectionDrunkennessServiceImpl implements IDetectionDrunkennessSer
         removeText(currentInputConnection);
         //Set the state of the user as drunk
         setStateDrunk();
+        //Take a picture
+        context.
         //Make appear a toast to warn the user
         Toast.makeText(latinIME.getApplicationContext(),"You are drunk type \""+WORD_KEY+"\" to enables keyboard",Toast.LENGTH_LONG).show();
 
@@ -274,6 +279,7 @@ public class DetectionDrunkennessServiceImpl implements IDetectionDrunkennessSer
             latinIME.sendDownUpKeyEvents(KeyEvent.KEYCODE_DEL);
         }
     }
+
 
 
 }
