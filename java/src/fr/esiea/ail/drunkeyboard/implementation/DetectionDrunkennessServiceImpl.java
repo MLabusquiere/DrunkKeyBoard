@@ -245,17 +245,16 @@ public class DetectionDrunkennessServiceImpl implements IDetectionDrunkennessSer
      * Algorithm needed to be executed if the user is drunk
      */
     @Override
-    public final void execute(InputConnection currentInputConnection) {
+    public final void executeUserDrunk(InputConnection currentInputConnection) {
 
-        //Remove all the text typed by the user
-        removeText(currentInputConnection);
-        //Set the state of the user as drunk
-        setStateDrunk();
-        //take a picture
-        takePicture();
-        //Make appear a toast to warn the user
-        Toast.makeText(keyboardService.getApplicationContext(),"You are drunk type \""+WORD_KEY+"\" to enables keyboard",Toast.LENGTH_SHORT).show();
-
+            //Remove all the text typed by the user
+            removeText(currentInputConnection);
+            //Set the state of the user as drunk
+            setStateDrunk();
+            //take a picture
+            takePicture();
+            //Make appear a toast to warn the user
+            Toast.makeText(keyboardService.getApplicationContext(),"You are drunk type \""+WORD_KEY+"\" to enables keyboard",Toast.LENGTH_SHORT).show();
     }
 
     private final void takePicture() {
@@ -267,6 +266,11 @@ public class DetectionDrunkennessServiceImpl implements IDetectionDrunkennessSer
 
     private void setStateDrunk() {
         drunk = true;
+    }
+
+    @Override
+    public boolean isDrunk()   {
+        return drunk;
     }
 
     /*

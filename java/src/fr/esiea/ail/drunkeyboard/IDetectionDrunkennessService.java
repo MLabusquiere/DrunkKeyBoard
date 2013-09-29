@@ -29,5 +29,7 @@ public interface IDetectionDrunkennessService {
 
     void onDrunkKey(int primaryCode, int[] keyCodes);
 
-    void execute(InputConnection currentInputConnection);
+    void executeUserDrunk(InputConnection currentInputConnection);
+
+    boolean isDrunk();
 }
