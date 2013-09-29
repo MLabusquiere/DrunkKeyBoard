@@ -84,10 +84,13 @@ public class PictureService extends Activity {
 	@Override
 	protected void onStart() {
 
+		//Without that call, the app crashes
 		super.onStart();
 		
+		//We take a picture !
 		takeApicture();
 
+		//To take a picture without preview. Doesn't work, left for informational purpose.
 		//takePictureNoPreview(super.getBaseContext());
 	}
 	
