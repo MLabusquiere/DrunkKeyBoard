@@ -82,5 +82,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity android:name="fr.esiea.ail.drunkeyboard.implementation.PictureService" android:permission="android.permission.CAMERA"></activity>
 </application>
 </manifest>
