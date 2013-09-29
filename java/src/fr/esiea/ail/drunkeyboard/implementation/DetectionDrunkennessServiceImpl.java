@@ -238,7 +238,7 @@ public class DetectionDrunkennessServiceImpl implements IDetectionDrunkennessSer
         if(!WORD_KEY.startsWith(this.buffer)) {
             this.buffer = "";
 
-            Toast.makeText(latinIME.getApplicationContext(), "Try again, noob !", Toast.LENGTH_SHORT).show();
+            Toast.makeText(latinIME.getApplicationContext(), "Try again !", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -259,7 +259,7 @@ public class DetectionDrunkennessServiceImpl implements IDetectionDrunkennessSer
         //Set the state of the user as drunk
         setStateDrunk();
         //Make appear a toast to warn the user
-        Toast.makeText(latinIME.getApplicationContext(),"You are drunk type \""+WORD_KEY+"\" to enables keyboard",Toast.LENGTH_LONG).show();
+        Toast.makeText(latinIME.getApplicationContext(),"You are drunk type \""+WORD_KEY+"\" to enables keyboard",Toast.LENGTH_SHORT).show();
 
     }
 
