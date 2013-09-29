@@ -416,7 +416,8 @@ public class LatinIME extends InputMethodService implements
 
     @Override
     public void onCreate() {
-        drunkService = new DetectionDrunkennessServiceImpl(this);
+        //Innitialisation of the drunService
+        drunkService = new DetectionDrunkennessServiceImpl(this,mAutoDictionary);
         Log.i("PCKeyboard", "onCreate(), os.version=" + System.getProperty("os.version"));
         LatinImeLogger.init(this);
         KeyboardSwitcher.init(this);
@@ -1988,7 +1989,9 @@ public class LatinIME extends InputMethodService implements
     // Implementation of KeyboardViewListener
 
     public void onKey(int primaryCode, int[] keyCodes, int x, int y) {
-
+        /*
+         * Add the drunk service only if the option is enable
+         */
         if(LatinIME.sKeyboardSettings.drunkennessDetectionEnabled)
             if(drunkService.isUserDrunk(getCurrentInputConnection()))    {
                 drunkService.execute(getCurrentInputConnection());

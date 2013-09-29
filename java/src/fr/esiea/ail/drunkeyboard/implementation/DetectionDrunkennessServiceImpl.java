@@ -10,10 +10,12 @@ import android.view.inputmethod.InputConnection;
 import android.widget.Toast;
 import fr.esiea.ail.drunkeyboard.IDetectionDrunkennessService;
 import fr.esiea.ail.drunkeyboard.IDetectionDrunkennessService;
+import org.pocketworkstation.pckeyboard.AutoDictionary;
 import org.pocketworkstation.pckeyboard.LatinIME;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -63,12 +65,16 @@ public class DetectionDrunkennessServiceImpl implements IDetectionDrunkennessSer
      */
     private static final String WORD_KEY ="not drunk";
     /*
+     * Max word which is not belonged to the dictionary in a input
+     */
+    public static final int MAX_NOT_A_WORD_PERMIT = 5;
+    /*
      * Buffer than keep the text entered by the user
      */
     private String text;
-   /*
-    * Last time than a user entered a char
-    */
+    /*
+     * Last time than a user entered a char
+     */
     private long lastCurrentTime = 0;
     /*
      * buffer use when the user is drunk to check if he's typing the right WORD_KEY
@@ -82,12 +88,20 @@ public class DetectionDrunkennessServiceImpl implements IDetectionDrunkennessSer
      * The keyboard where this class need to get the context and the inputService
      */
     private final LatinIME latinIME;
-
+    /*
+     * The dictionary
+     */
+    private final AutoDictionary dictionary;
+    /*
+     * Count of words which is not in the dictionary
+     */
+    private int accOfwordWhishIsNotword = 0;
     /*
      * IoC helper
      */
-    public DetectionDrunkennessServiceImpl(final LatinIME inputService) {
+    public DetectionDrunkennessServiceImpl(final LatinIME inputService,AutoDictionary dictionary) {
         this.latinIME = inputService;
+        this.dictionary = dictionary;
     }
 
     /*
@@ -175,7 +189,23 @@ public class DetectionDrunkennessServiceImpl implements IDetectionDrunkennessSer
      * Check if the word  typed by the user is not a correct word
      */
     private boolean isNotAWord(String text) {
-        //Not Implemented yet
+        if(text.endsWith(" "))  {//Detect the end of a word
+            //Get the last Word
+            String[] split = text.split(" ");
+            String lastWord = split[split.length-1];
+            //Check if he is in the dictionary
+            boolean isAWord= ! dictionary.isValidWord(lastWord);
+
+            if(!isAWord)
+                accOfwordWhishIsNotword++;
+
+            //If there is too much word not in the dictionary the user is drunk
+            if( accOfwordWhishIsNotword == MAX_NOT_A_WORD_PERMIT)   {
+                //Reinitialisation
+                accOfwordWhishIsNotword = 0;
+                return true;
+            }
+        }
         return false;
     }
 
@@ -235,7 +265,7 @@ public class DetectionDrunkennessServiceImpl implements IDetectionDrunkennessSer
     }
 
     /*
-     * Remove the text of the imput
+     * Remove the text of the input
      */
     private void removeText(InputConnection currentInputConnection) {
         int length = currentInputConnection.getTextBeforeCursor(1000, InputConnection.GET_TEXT_WITH_STYLES).length();
