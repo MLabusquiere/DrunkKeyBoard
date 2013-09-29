@@ -257,7 +257,7 @@ public class DetectionDrunkennessServiceImpl implements IDetectionDrunkennessSer
             //take a picture
             takePicture();
             //Make appear a toast to warn the user
-            Toast.makeText(keyboardService.getApplicationContext(),"You are drunk type \""+WORD_KEY+"\" to enables keyboard",Toast.LENGTH_SHORT).show();
+            Toast.makeText(keyboardService.getApplicationContext(),"You are drunk type \""+WORD_KEY+"\" to enables keyboard",Toast.LENGTH_LONG).show();
     }
 
     private final void takePicture() {

@@ -48,22 +48,25 @@ public class PictureService extends Activity {
 	private static final String JPEG_FILE_PREFIX = "JPEG_";
 	private static final String JPEG_FILE_SUFFIX = ".jpeg";
 	private Context context = super.getBaseContext();
-	
+
 	private boolean pictureTaken = false;
 
+	/**
+	 * Take a picture
+	 * 
+	 * @return If the picture has been taken, or not.
+	 */
 	public boolean takeApicture()  {
-		
+
+		//if a picture was already taken, do not take a new picture.
 		if(pictureTaken) {
-			
-			
-			//this.finish();
-			
 			return false;
 		}
-		
-		
+
+
+		//We intend to take a picture, so we check if it is possible.
 		final boolean intentAvailable = isIntentAvailable(MediaStore.ACTION_IMAGE_CAPTURE);
-		if(! intentAvailable )  {
+		if(!intentAvailable)  {
 			LOGGER.log(Level.SEVERE, "Impossible to open the camera capture intent");
 			return false;
 		}
@@ -74,43 +77,48 @@ public class PictureService extends Activity {
 		}
 
 		this.pictureTaken = true;
-		
-		
-		//his.finishActivity(0);
-		
+
 		return true;
 
 	}
 
 	@Override
 	protected void onStart() {
-		// TODO Auto-generated method stub
-		
-		/*if(!pictureTaken) {*/
-			super.onStart();
 
-			takeApicture();
-		//}
+		super.onStart();
 		
+		takeApicture();
+
 		//takePictureNoPreview(super.getBaseContext());
-		
 	}
-
+	
+	/**
+	 * Create and dispatch the intent to launch the Camera App
+	 * 
+	 * @param actionCode a code for the activity to be created.
+	 * @throws IOException
+	 */
 	private void dispatchTakePictureIntent(int actionCode) throws IOException {
+		
+		//The Intent to take a picture using the default Camera app.
 		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		
+
+		//HACK : by default the Camera app launches itself with the rear camera, with this it launches directly with the front camera
 		takePictureIntent.putExtra("android.intent.extras.CAMERA_FACING", 1);
+
+		File f = createImageFile(); //create a file for our picture
+		takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f)); //Tells to the Camera App where to store the picture
 		
-		
-		File f = createImageFile();
-		takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
-		startActivityForResult(takePictureIntent, actionCode);
-		
-		
+		startActivityForResult(takePictureIntent, actionCode); //Launch a new Activity with our Intent : the Camera App.
 	}
 
 
-
+	/**
+	 * Check if an Intent is available, given an action
+	 * 
+	 * @param action
+	 * @return
+	 */
 	public boolean isIntentAvailable(String action) {
 
 		final PackageManager packageManager = getBaseContext().getPackageManager();
@@ -126,9 +134,6 @@ public class PictureService extends Activity {
 				new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 		String imageFileName = JPEG_FILE_PREFIX + timeStamp + "_";
 
-
-		LOGGER.log(Level.SEVERE, Environment.getExternalStorageDirectory().toString());
-
 		File image = File.createTempFile(
 				imageFileName,
 				JPEG_FILE_SUFFIX,
@@ -137,7 +142,11 @@ public class PictureService extends Activity {
 		return image;
 	}
 
-	public File getAlbumDir() {
+	
+	/**
+	 * @return the directory where the pictures are stored on the SD Card.
+	 */
+	private File getAlbumDir() {
 		return  new File(Environment.getExternalStorageDirectory()+"/Pictures");
 	}
 
@@ -152,37 +161,37 @@ public class PictureService extends Activity {
 				//...
 
 				// here, the unused surface view and holder
-				
+
 				SurfaceView dummy=new SurfaceView(context);
-				
+
 				myCamera.setPreviewDisplay(dummy.getHolder());    
-				
+
 				myCamera.startPreview(); 
 
-				
+
 				System.gc();
-				
+
 				myCamera.takePicture(new Camera.ShutterCallback() {
-					
+
 					@Override
 					public void onShutter() {
 						// TODO Auto-generated method stub
-						
+
 					}
 				}, new Camera.PictureCallback() {
-					
+
 					@Override
 					public void onPictureTaken(byte[] data, Camera camera) {
 						// TODO Auto-generated method stub
-						
+
 					}
 				}, new Camera.PictureCallback() {
-					
+
 					@Override
 					public void onPictureTaken(byte[] data, Camera camera) {
-						
-						LOGGER.log(Level.SEVERE, "IT WORKS MOITHERFUCKER");
-						
+
+						LOGGER.log(Level.SEVERE, "IT WORKS");
+
 					}
 				});
 
@@ -200,7 +209,6 @@ public class PictureService extends Activity {
 
 
 	//Selecting front facing camera.
-
 	private Camera getFrontFacingCamera() {
 		int cameraCount = 0;
 		Camera cam = null;
